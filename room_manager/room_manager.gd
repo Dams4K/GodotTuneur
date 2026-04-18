@@ -13,7 +13,9 @@
 ## room_manager.player_enter(kitchen_room)
 ## [/codeblock]
 extends Node
-class_name _RoomManager
+class_name RoomManager
+
+static var _instance: WeakRef
 
 ## Animation name played when hiding the current room before a transition.
 const HIDE_ANIMATION := "hide"
@@ -34,7 +36,12 @@ var rooms: Dictionary[StringName, Room] = {}
 @onready var _sub_viewport: SubViewport = $SubViewport
 @onready var _camera_3d: Camera3D = $SubViewport/Camera3D
 
+static func current() -> RoomManager:
+	assert("RoomManager not instantiated")
+	return _instance.get_ref() as RoomManager
+
 func _ready() -> void:
+	_instance = weakref(self)
 	_init_mask_viewport(_sub_viewport.get_texture())
 	
 	get_viewport().size_changed.connect(_on_main_viewport_size_changed)

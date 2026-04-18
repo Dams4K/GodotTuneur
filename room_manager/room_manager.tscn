@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://0bek0wfprkia"]
 
-[ext_resource type="Script" uid="uid://inr552l70eei" path="res://addons/tuneur/room_manager/room_manager.gd" id="1_1j0tp"]
-[ext_resource type="Shader" uid="uid://ct55tmv8yrs1g" path="res://addons/tuneur/shaders/custom_stencil.gdshader" id="2_08ypc"]
-[ext_resource type="Script" uid="uid://baat4dk800lu6" path="res://addons/tuneur/shaders/compositor/grow/grow_black.gd" id="3_e4ewj"]
-[ext_resource type="Script" uid="uid://f1j1smcsq7l8" path="res://addons/tuneur/shaders/compositor/blur/blur.gd" id="4_ibmq3"]
+[ext_resource type="Script" uid="uid://f4qp5vhmc0yq" path="res://addons/tuneur/room_manager/room_manager.gd" id="1_1j0tp"]
+[ext_resource type="Shader" uid="uid://dmu3lrsk2j846" path="res://addons/tuneur/shaders/custom_stencil.gdshader" id="2_08ypc"]
+[ext_resource type="Script" uid="uid://cnd8i53v0u2wy" path="res://addons/tuneur/shaders/compositor/grow/grow_black.gd" id="3_e4ewj"]
+[ext_resource type="Script" uid="uid://bn7m2j7vry3pn" path="res://addons/tuneur/shaders/compositor/blur/blur.gd" id="4_ibmq3"]
 
 [sub_resource type="Animation" id="Animation_vbegm"]
 length = 0.001

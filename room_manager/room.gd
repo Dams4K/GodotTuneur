@@ -1,7 +1,7 @@
 ## A section of the map
 ## 
-## Each Room registers itself with [method _RoomManager.register] on [code]_ready[/code] and listens to its [member area]
-## to notify [_RoomManager] when the player enters or exits.[br]
+## Each Room registers itself with [method RoomManager.register] on [code]_ready[/code] and listens to its [member area]
+## to notify [RoomManager] when the player enters or exits.[br]
 ## [br]
 ## Visibility is controlled exclusively through [method reveal] and [method peek] —
 ## never call [code]show()[/code] / [code]hide()[/code] directly on a Room.
@@ -17,7 +17,7 @@
 extends Node3D
 class_name Room
 
-## Unique identifier used by [_RoomManager] to look up this room.
+## Unique identifier used by [RoomManager] to look up this room.
 ## Must be non-empty and match any references in [member close_rooms] of other rooms.
 @export var room_name: StringName
 
@@ -33,9 +33,10 @@ class_name Room
 ## Each name must match the [member room_name] of a registered [Room].
 @export var close_rooms: Array[StringName] = []
 
-## Registers this room with [_RoomManager] and hides it until the player enters.
+## Registers this room with [RoomManager] and hides it until the player enters.
 func _register() -> void:
-	RoomManager.register(self)
+	if Engine.is_editor_hint(): return
+	RoomManager.current().register(self)
 	hide()
 
 
@@ -51,7 +52,7 @@ func _ready() -> void:
 
 ## Shows both the room geometry and its [member mask], making this room
 ## fully visible with the mask shader active.[br]
-## Called by [_RoomManager] when this room becomes the current room.
+## Called by [RoomManager] when this room becomes the current room.
 func reveal() -> void:
 	mask.show()
 	show()
@@ -64,7 +65,7 @@ func peek() -> void:
 	show()
 
 func _on_player_entered(body: Node3D) -> void:
-	RoomManager.player_enter(self)
+	RoomManager.current().player_enter(self)
 
 func _on_player_exited(body: Node3D) -> void:
-	RoomManager.player_exit(self)
+	RoomManager.current().player_exit(self)
