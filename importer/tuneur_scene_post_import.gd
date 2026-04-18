@@ -18,10 +18,13 @@ enum ObjectType {
 	MASK
 }
 
+## Get tuneur metadata
 func _get_tuneur(node: Node) -> Dictionary:
 	var tuneur: Dictionary = node.get_meta(V_EXTRAS, {}).get(TU_METADATA_NAME, {})
 	return tuneur
 
+## Custom iterate node collisions.[br]
+## If the node is a room, the node should be handled differently. Else fall back to the default iterate
 func iterate_node_collisions(node3d: Node3D, goblend_data: Dictionary) -> void:
 	var tuneur_data: Dictionary = _get_tuneur(node3d)
 	if tuneur_data.is_empty(): return super.iterate_node_collisions(node3d, goblend_data)
@@ -34,6 +37,7 @@ func iterate_node_collisions(node3d: Node3D, goblend_data: Dictionary) -> void:
 	
 	create_room(instance, goblend_data, tuneur_data)
 
+## Create room node, and set it up.
 func create_room(instance: MeshInstance3D, goblend_data: Dictionary, tuneur_data: Dictionary) -> void:
 	var collisions: Array = goblend_data.get(V_LIST, [])
 	var node_name: String = instance.name
@@ -54,6 +58,7 @@ func create_room(instance: MeshInstance3D, goblend_data: Dictionary, tuneur_data
 	_create_and_link_collision_objects(collisions, room, instance)
 	_link_mask_to_room(instance, room)
 
+## Link the room's area
 func _create_and_link_collision_objects(collisions: Array, room: Room, instance: MeshInstance3D) -> void:
 	var node_name: String = instance.name
 	
@@ -66,6 +71,7 @@ func _create_and_link_collision_objects(collisions: Array, room: Room, instance:
 		if room.area == null and collision_node is Area3D:
 			room.area = collision_node
 
+## Link the room's mask
 func _link_mask_to_room(instance: MeshInstance3D, room: Room) -> void:
 	for child in instance.get_children():
 		if not child is MeshInstance3D: continue

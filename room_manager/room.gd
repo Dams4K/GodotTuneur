@@ -1,14 +1,43 @@
+## A section of the map
+## 
+## Each Room registers itself with [method _RoomManager.register] on [code]_ready[/code] and listens to its [member area]
+## to notify [_RoomManager] when the player enters or exits.[br]
+## [br]
+## Visibility is controlled exclusively through [method reveal] and [method peek] —
+## never call [code]show()[/code] / [code]hide()[/code] directly on a Room.
+##
+## [codeblock]
+## # In the scene tree, assign exports in the Inspector:
+## # room_name  → "Kitchen"
+## # mask       → MeshInstance3D (the room's mask geometry)
+## # area       → Area3D (collision shape covering the room floor)
+## # close_rooms → ["Hall", "Pantry"]
+## [/codeblock]
+## But everything is set up automatically when importing a model with [code]res://addons/tuneur/importer/tuneur_scene_post_import.gd[/code] as the post import script
 extends Node3D
 class_name Room
 
-@export var room_name: String
-@export var mask: Node3D
-@export var area: Area3D
-@export var close_rooms: Array[String] = []
+## Unique identifier used by [_RoomManager] to look up this room.
+## Must be non-empty and match any references in [member close_rooms] of other rooms.
+@export var room_name: StringName
 
+## The 3D node whose visibility drives the mask shader.
+## Shown by [method reveal], hidden by [method peek].
+@export var mask: Node3D
+
+## The trigger volume that detects player entry and exit.
+## Must contain at least one [CollisionShape3D].
+@export var area: Area3D
+
+## Names of directly adjacent rooms whose meshes should be visible through doorways.
+## Each name must match the [member room_name] of a registered [Room].
+@export var close_rooms: Array[StringName] = []
+
+## Registers this room with [_RoomManager] and hides it until the player enters.
 func _register() -> void:
 	RoomManager.register(self)
 	hide()
+
 
 func _ready() -> void:
 	assert(not room_name.is_empty(), "Room name missing")
@@ -19,16 +48,23 @@ func _ready() -> void:
 	area.body_entered.connect(_on_player_entered)
 	area.body_exited.connect(_on_player_exited)
 
+
+## Shows both the room geometry and its [member mask], making this room
+## fully visible with the mask shader active.[br]
+## Called by [_RoomManager] when this room becomes the current room.
+func reveal() -> void:
+	mask.show()
+	show()
+
+## Shows the room geometry but hides the [member mask], allowing meshes to
+## render through doorways without activating the mask shader.[br]
+## Called by [RoomManager] for rooms adjacent to the current room.
+func peek() -> void:
+	mask.hide()
+	show()
+
 func _on_player_entered(body: Node3D) -> void:
 	RoomManager.player_enter(self)
 
 func _on_player_exited(body: Node3D) -> void:
 	RoomManager.player_exit(self)
-
-func reveal() -> void:
-	mask.show()
-	show()
-
-func peek() -> void:
-	mask.hide()
-	show()
