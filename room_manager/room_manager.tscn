@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://0bek0wfprkia"]
 
-[ext_resource type="Script" uid="uid://f4qp5vhmc0yq" path="res://addons/tuneur/room_manager/room_manager.gd" id="1_1j0tp"]
-[ext_resource type="Shader" uid="uid://dmu3lrsk2j846" path="res://addons/tuneur/shaders/custom_stencil.gdshader" id="2_08ypc"]
-[ext_resource type="Script" uid="uid://cnd8i53v0u2wy" path="res://addons/tuneur/shaders/compositor/grow/grow_black.gd" id="3_e4ewj"]
-[ext_resource type="Script" uid="uid://bn7m2j7vry3pn" path="res://addons/tuneur/shaders/compositor/blur/blur.gd" id="4_ibmq3"]
+[ext_resource type="Script" uid="uid://inr552l70eei" path="res://addons/tuneur/room_manager/room_manager.gd" id="1_1j0tp"]
+[ext_resource type="Shader" uid="uid://ct55tmv8yrs1g" path="res://addons/tuneur/shaders/custom_stencil.gdshader" id="2_08ypc"]
+[ext_resource type="Script" uid="uid://baat4dk800lu6" path="res://addons/tuneur/shaders/compositor/grow/grow_black.gd" id="3_e4ewj"]
+[ext_resource type="Script" uid="uid://f1j1smcsq7l8" path="res://addons/tuneur/shaders/compositor/blur/blur.gd" id="4_ibmq3"]
 
 [sub_resource type="Animation" id="Animation_vbegm"]
 length = 0.001
@@ -81,7 +81,7 @@ shader_parameter/transparency = 1.0
 [sub_resource type="Environment" id="Environment_s5dmo"]
 background_mode = 1
 
-[sub_resource type="CompositorEffect" id="CompositorEffect_x50te"]
+[sub_resource type="CompositorEffect" id="CompositorEffect_e4ewj"]
 resource_local_to_scene = false
 resource_name = ""
 enabled = true
@@ -90,9 +90,9 @@ needs_motion_vectors = false
 needs_normal_roughness = false
 script = ExtResource("3_e4ewj")
 radius = 4
-metadata/_custom_type_script = "uid://bh0spqlyu6a4n"
+metadata/_custom_type_script = "uid://baat4dk800lu6"
 
-[sub_resource type="CompositorEffect" id="CompositorEffect_vfy47"]
+[sub_resource type="CompositorEffect" id="CompositorEffect_ibmq3"]
 resource_local_to_scene = false
 resource_name = ""
 enabled = true
@@ -100,10 +100,10 @@ effect_callback_type = 4
 needs_motion_vectors = false
 needs_normal_roughness = false
 script = ExtResource("4_ibmq3")
-metadata/_custom_type_script = "uid://b00c5g5fhqkkx"
+metadata/_custom_type_script = "uid://f1j1smcsq7l8"
 
 [sub_resource type="Compositor" id="Compositor_ysyxu"]
-compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_x50te"), SubResource("CompositorEffect_vfy47")])
+compositor_effects = Array[CompositorEffect]([SubResource("CompositorEffect_e4ewj"), SubResource("CompositorEffect_ibmq3")])
 
 [node name="RoomManager" type="Node" unique_id=748362340]
 script = ExtResource("1_1j0tp")
