@@ -105,11 +105,8 @@ func _uniform(rid: RID, binding: int) -> RDUniform:
 	return u
 
 
-func _free_rid(rid: RID) -> void:
-	if rid.is_valid(): rd.free_rid(rid)
-
-
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
-		_free_rid(temp)
-		_free_rid(shader)
+		if rd == null: return
+		if temp.is_valid(): rd.free_rid(temp)
+		if shader.is_valid(): rd.free_rid(shader)

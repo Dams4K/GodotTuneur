@@ -142,13 +142,11 @@ func _uniform(rid: RID, binding: int) -> RDUniform:
 	u.add_id(rid)
 	return u
 
-func _free_rid(rid: RID) -> void:
-	if rid == null: return
-	if rid.is_valid(): rd.free_rid(rid)
 
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
-		_free_rid(temp_h)
-		_free_rid(temp_v)
-		_free_rid(shader_linear)
-		_free_rid(shader_combine)
+		if rd == null: return
+		if temp_h.is_valid(): rd.free_rid(temp_h)
+		if temp_v.is_valid(): rd.free_rid(temp_v)
+		if shader_linear.is_valid(): rd.free_rid(shader_linear)
+		if shader_combine.is_valid(): rd.free_rid(shader_combine)
