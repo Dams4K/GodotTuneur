@@ -37,6 +37,15 @@ func iterate_node_collisions(node3d: Node3D, goblend_data: Dictionary) -> void:
 	
 	create_room(instance, goblend_data, tuneur_data)
 
+func blender_name_to_godot(name: String) -> String:
+	return name \
+		.replace(".", "_") \
+		.replace(":", "_") \
+		.replace("@", "_") \
+		.replace("/", "_") \
+		.replace('"', "_") \
+		.replace("%", "_")
+
 ## Create room node, and set it up.
 func create_room(instance: MeshInstance3D, goblend_data: Dictionary, tuneur_data: Dictionary) -> void:
 	var collisions: Array = goblend_data.get(V_LIST, [])
@@ -51,7 +60,7 @@ func create_room(instance: MeshInstance3D, goblend_data: Dictionary, tuneur_data
 	for close_room: Dictionary in close_rooms:
 		var close_room_name: String = close_room.get(TU_CLOSE_ROOMS_TARGET, {}).get(TU_CLOSE_ROOMS_TARGET_NAME, "")
 		if close_room_name.is_empty(): continue
-		room.close_rooms.append(close_room_name)
+		room.close_rooms.append(blender_name_to_godot(close_room_name))
 	
 	_replace_root_node(room, instance)
 	
