@@ -102,6 +102,7 @@ func _switch_room() -> void:
 	
 	if previous_room != null:
 		previous_room.hide()
+		_hide_close_rooms(previous_room)
 	
 	current_room.reveal()
 	_peek_close_rooms(current_room)
@@ -130,3 +131,11 @@ func _peek_close_rooms(room: Room) -> void:
 			push_error("Room called ", close_room_name, " not found")
 			continue
 		close_room.peek()
+
+func _hide_close_rooms(room: Room) -> void:
+	for close_room_name: String in room.close_rooms:
+		var close_room: Room = rooms.get(close_room_name, null)
+		if close_room == null:
+			push_error("Room called ", close_room_name, " not found")
+			continue
+		close_room.hide()
