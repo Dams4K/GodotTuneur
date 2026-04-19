@@ -57,6 +57,7 @@ func _update_mask_camera() -> void:
 	if current_camera_3d == null: return
 	
 	_camera_3d.global_position = current_camera_3d.global_position
+	_camera_3d.global_rotation = current_camera_3d.global_rotation
 	_camera_3d.size            = current_camera_3d.size
 	_camera_3d.h_offset        = current_camera_3d.h_offset
 	_camera_3d.v_offset        = current_camera_3d.v_offset
