@@ -27,7 +27,7 @@ class_name Room
 
 ## The trigger volume that detects player entry and exit.
 ## Must contain at least one [CollisionShape3D].
-@export var area: Area3D
+@export var boundaries: Area3D
 
 ## Names of directly adjacent rooms whose meshes should be visible through doorways.
 ## Each name must match the [member room_name] of a registered [Room].
@@ -43,11 +43,11 @@ func _register() -> void:
 func _ready() -> void:
 	assert(not room_name.is_empty(), "Room name missing")
 	assert(mask != null, "Room mask missing")
-	assert(area != null, "Room area missing")
+	assert(boundaries != null, "Room boundaries missing")
 	
 	_register()
-	area.body_entered.connect(_on_player_entered)
-	area.body_exited.connect(_on_player_exited)
+	boundaries.body_entered.connect(_on_player_entered)
+	boundaries.body_exited.connect(_on_player_exited)
 
 
 ## Shows both the room geometry and its [member mask], making this room

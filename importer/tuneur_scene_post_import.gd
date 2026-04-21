@@ -15,13 +15,20 @@ const TU_CLOSE_ROOMS_TARGET_NAME = "name"
 enum ObjectType {
 	NONE,
 	ROOM,
-	MASK
+	MASK,
+	BOUNDARIES
 }
 
 ## Get tuneur metadata
 func _get_tuneur(node: Node) -> Dictionary:
 	var tuneur: Dictionary = node.get_meta(V_EXTRAS, {}).get(TU_METADATA_NAME, {})
 	return tuneur
+
+func iterate_node(node: Node):
+	var tuneur_data: Dictionary = _get_tuneur(node)
+	var type: int = tuneur_data.get(TU_TYPE, {}).get(TU_TYPE, 0)
+	if type == ObjectType.BOUNDARIES: return
+	super.iterate_node(node)
 
 ## Custom iterate node collisions.[br]
 ## If the node is a room, the node should be handled differently. Else fall back to the default iterate
@@ -30,7 +37,8 @@ func iterate_node_collisions(node3d: Node3D, goblend_data: Dictionary) -> void:
 	if tuneur_data.is_empty(): return super.iterate_node_collisions(node3d, goblend_data)
 	
 	var type: int = tuneur_data.get(TU_TYPE, {}).get(TU_TYPE, 0)
-	if type != ObjectType.ROOM: return super.iterate_node_collisions(node3d, goblend_data)
+	if type == ObjectType.MASK: return super.iterate_node_collisions(node3d, goblend_data)
+	if type == ObjectType.BOUNDARIES: return
 	
 	if not node3d is MeshInstance3D: return super.iterate_node_collisions(node3d, goblend_data)
 	var instance := node3d as MeshInstance3D
@@ -64,21 +72,39 @@ func create_room(instance: MeshInstance3D, goblend_data: Dictionary, tuneur_data
 	
 	_replace_root_node(room, instance)
 	
-	_create_and_link_collision_objects(collisions, room, instance)
+	_link_boudaries_to_room(instance, room)
 	_link_mask_to_room(instance, room)
 
+
 ## Link the room's area
-func _create_and_link_collision_objects(collisions: Array, room: Room, instance: MeshInstance3D) -> void:
-	var node_name: String = instance.name
-	
-	for col_idx in range(collisions.size()):
-		var collision_data: Dictionary = collisions[col_idx]
+func _link_boudaries_to_room(instance: MeshInstance3D, room: Room) -> void:
+	for child in instance.get_children():
+		if not child is MeshInstance3D: continue
+		var boundaries_instance: MeshInstance3D = child
 		
-		var collision_node := _create_collision_object(collision_data, room, instance.mesh)
-		_name_collision(collision_node, collision_data, node_name)
+		var boundaries_tuneur_data := _get_tuneur(boundaries_instance)
+		if boundaries_tuneur_data.is_empty(): continue
 		
-		if room.area == null and collision_node is Area3D:
-			room.area = collision_node
+		var child_type: int = boundaries_tuneur_data.get(TU_TYPE, {}).get(TU_TYPE, 0)
+		if child_type != ObjectType.BOUNDARIES: continue
+		
+		super.iterate_node_collisions(boundaries_instance, _get_goblend(boundaries_instance).get("collisions",  {}))
+		var _boundaries_areas: Array = boundaries_instance.find_children("*", "Area3D", false, true)
+		if _boundaries_areas.is_empty():
+			push_error("No boundaries found for %s" % boundaries_instance)
+			return
+		var boundaries_area = _boundaries_areas[0]
+		boundaries_instance.remove_child(boundaries_area)
+		boundaries_area.owner = null
+		room.add_child(boundaries_area)
+		boundaries_area.owner = room.owner
+		
+		room.boundaries = boundaries_area
+		boundaries_area.name = "Boundaries"
+		
+		boundaries_instance.queue_free()
+		break
+
 
 ## Link the room's mask
 func _link_mask_to_room(instance: MeshInstance3D, room: Room) -> void:
