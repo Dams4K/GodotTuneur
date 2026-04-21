@@ -21,6 +21,8 @@ class_name Room
 ## Must be non-empty and match any references in [member close_rooms] of other rooms.
 @export var room_name: StringName
 
+@export var instance: MeshInstance3D
+
 ## The 3D node whose visibility drives the mask shader.
 ## Shown by [method reveal], hidden by [method peek].
 @export var mask: Node3D
@@ -37,12 +39,13 @@ class_name Room
 func _register() -> void:
 	if Engine.is_editor_hint(): return
 	RoomManager.current().register(self)
-	hide()
+	dissimulate()
 
 
 func _ready() -> void:
 	assert(not room_name.is_empty(), "Room name missing")
-	assert(mask != null, "Room mask missing")
+	assert(instance != null, "Room instance is missing")
+	assert(mask != null, "Room mask missing for %s" % self)
 	assert(boundaries != null, "Room boundaries missing")
 	
 	_register()
@@ -55,14 +58,24 @@ func _ready() -> void:
 ## Called by [RoomManager] when this room becomes the current room.
 func reveal() -> void:
 	mask.show()
-	show()
+	show_instance()
+
+func dissimulate() -> void:
+	hide_instance()
+	mask.hide()
+
+func hide_instance() -> void:
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+
+func show_instance() -> void:
+	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
 
 ## Shows the room geometry but hides the [member mask], allowing meshes to
 ## render through doorways without activating the mask shader.[br]
 ## Called by [RoomManager] for rooms adjacent to the current room.
 func peek() -> void:
 	mask.hide()
-	show()
+	show_instance()
 
 func _on_player_entered(body: Node3D) -> void:
 	RoomManager.current().player_enter(self)

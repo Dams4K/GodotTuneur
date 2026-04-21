@@ -37,11 +37,12 @@ func iterate_node_collisions(node3d: Node3D, goblend_data: Dictionary) -> void:
 	if tuneur_data.is_empty(): return super.iterate_node_collisions(node3d, goblend_data)
 	
 	var type: int = tuneur_data.get(TU_TYPE, {}).get(TU_TYPE, 0)
-	if type == ObjectType.MASK: return super.iterate_node_collisions(node3d, goblend_data)
 	if type == ObjectType.BOUNDARIES: return
+	if type != ObjectType.ROOM: return super.iterate_node_collisions(node3d, goblend_data)
 	
 	if not node3d is MeshInstance3D: return super.iterate_node_collisions(node3d, goblend_data)
 	var instance := node3d as MeshInstance3D
+	super.iterate_node_collisions(instance, goblend_data)
 	
 	create_room(instance, goblend_data, tuneur_data)
 
@@ -63,6 +64,7 @@ func create_room(instance: MeshInstance3D, goblend_data: Dictionary, tuneur_data
 	var room := Room.new()
 	room.name = "{0}Room".format([node_name])
 	room.room_name = node_name # Name used by other rooms for "close rooms"
+	room.instance = instance
 	
 	var close_rooms: Array = tuneur_data.get(TU_CLOSE_ROOMS, {}).get(V_LIST, [])
 	for close_room: Dictionary in close_rooms:
