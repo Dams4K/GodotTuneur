@@ -57,18 +57,30 @@ func _ready() -> void:
 ## fully visible with the mask shader active.[br]
 ## Called by [RoomManager] when this room becomes the current room.
 func reveal() -> void:
-	mask.show()
 	show_instance()
+	show_children()
+	mask.show()
 
 func dissimulate() -> void:
 	hide_instance()
+	hide_children()
 	mask.hide()
 
 func hide_instance() -> void:
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
 
+func hide_children() -> void:
+	for child in instance.get_children():
+		if child == mask: continue
+		child.hide()
+
 func show_instance() -> void:
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
+
+func show_children() -> void:
+	for child in instance.get_children():
+		if child == mask: continue
+		child.show()
 
 ## Shows the room geometry but hides the [member mask], allowing meshes to
 ## render through doorways without activating the mask shader.[br]
@@ -76,6 +88,7 @@ func show_instance() -> void:
 func peek() -> void:
 	mask.hide()
 	show_instance()
+	show_children()
 
 func _on_player_entered(body: Node3D) -> void:
 	RoomManager.current().player_enter(self)
