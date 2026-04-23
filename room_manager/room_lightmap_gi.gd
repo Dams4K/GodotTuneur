@@ -7,7 +7,7 @@ func _ready() -> void:
 	RenderingServer.frame_post_draw.connect(_on_first_frame, CONNECT_ONE_SHOT)
 
 func _on_first_frame() -> void:
-	hide_other_rooms.call_deferred(	)
+	hide_other_rooms.call_deferred()
 
 func hide_other_rooms():
 	for room in RoomManager.current().rooms.values():
