@@ -39,7 +39,6 @@ class_name Room
 func _register() -> void:
 	if Engine.is_editor_hint(): return
 	RoomManager.current().register(self)
-	dissimulate()
 
 
 func _ready() -> void:
