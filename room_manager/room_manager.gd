@@ -37,7 +37,8 @@ var rooms: Dictionary[StringName, Room] = {}
 @onready var _camera_3d: Camera3D = $SubViewport/Camera3D
 
 static func current() -> RoomManager:
-	assert("RoomManager not instantiated")
+	assert(_instance != null, "RoomManager not instantiated")
+	assert(_instance.get_ref() != null, "RoomManager reference is missing")
 	return _instance.get_ref() as RoomManager
 
 func _ready() -> void:
