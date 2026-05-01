@@ -67,6 +67,7 @@ func dissimulate() -> void:
 
 func hide_instance() -> void:
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_SHADOWS_ONLY
+	instance.material_override = RoomManager.double_sided_shadow_only_mat
 
 func hide_children() -> void:
 	for child in instance.get_children():
@@ -75,6 +76,7 @@ func hide_children() -> void:
 
 func show_instance() -> void:
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_DOUBLE_SIDED
+	instance.material_override = null
 
 func show_children() -> void:
 	for child in instance.get_children():

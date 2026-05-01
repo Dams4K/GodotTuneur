@@ -15,6 +15,9 @@
 extends Node
 class_name RoomManager
 
+## When cast_shadow mode is set to "shadows_only", it's not double-sided
+## So we need to set "cull_mode" to disabled to have shadow cast to both sides
+static var double_sided_shadow_only_mat := StandardMaterial3D.new()
 static var _instance: WeakRef
 
 ## Animation name played when hiding the current room before a transition.
@@ -45,8 +48,13 @@ func _ready() -> void:
 	_instance = weakref(self)
 	_init_mask_viewport(_sub_viewport.get_texture())
 	
+	_init_double_sided_shadow_only_mat()
+	
 	get_viewport().size_changed.connect(_on_main_viewport_size_changed)
 	_on_main_viewport_size_changed()
+
+func _init_double_sided_shadow_only_mat() -> void:
+	double_sided_shadow_only_mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 
 func _process(delta: float) -> void:
 	_update_mask_camera()
