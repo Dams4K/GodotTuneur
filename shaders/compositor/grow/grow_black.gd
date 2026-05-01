@@ -70,6 +70,9 @@ func _ensure_buffers(size: Vector2i) -> void:
 
 func _render_callback(p_effect_callback_type: int, p_render_data: RenderData) -> void:
 	if not rd: return
+	# For now, image_color can't be read and written by a compositor in mobile, it's missing the TEXTURE_USAGE_STORAGE_BIT
+	# and TEXTURE_USAGE_CAN_COPY_TO_BIT. See https://github.com/godotengine/godot/issues/96737
+	if not RenderingServer.get_current_rendering_method() == "forward_plus": return
 	if p_effect_callback_type != EFFECT_CALLBACK_TYPE_POST_TRANSPARENT: return
 	if radius <= 0: return
 	
